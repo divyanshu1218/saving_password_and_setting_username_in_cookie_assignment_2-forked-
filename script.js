@@ -3,6 +3,7 @@ const MAX = 999;
 const pinInput = document.getElementById('pin');
 const sha256HashView = document.getElementById('sha256-hash');
 const resultView = document.getElementById('result');
+let originalNumber; // Variable to store the original random number
 
 // a function to store in the local storage
 function store(key, value) {
@@ -50,7 +51,8 @@ async function getSHA256Hash() {
     return cached;
   }
 
-  cached = await sha256(getRandomArbitrary(MIN, MAX));
+  originalNumber = getRandomArbitrary(MIN, MAX); // Store the original number
+  cached = await sha256(originalNumber);
   store('sha256', cached);
   return cached;
 }
@@ -74,10 +76,10 @@ async function test() {
   const hasedPin = await sha256(pin);
 
   if (hasedPin === sha256HashView.innerHTML) {
-    resultView.innerHTML = '🎉 success';
+    resultView.innerHTML = `🎉 success! The original number was ${originalNumber}.`;
     resultView.classList.add('success');
   } else {
-    resultView.innerHTML = '❌ failed';
+    resultView.innerHTML = '❌ failed. Try again!';
   }
   resultView.classList.remove('hidden');
 }
